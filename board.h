@@ -127,4 +127,24 @@ public:
 		char color = tempGrid[tr][tc]->getColor();
 		return isKingInCheck(color, tempGrid);
 	}
+
+	// Does the current player have any valid moves?
+	bool hasValidMoves(char color)
+	{
+		for (int fr = 0; fr < 8; fr++)
+			for (int fc = 0; fc < 8; fc++)
+			{
+				if (grid[fr][fc] == nullptr) continue;
+				if (grid[fr][fc]->getColor() != color) continue;
+
+				for (int tr = 0; tr < 8; tr++)
+					for (int tc = 0; tc < 8; tc++)
+					{
+						if (grid[fr][fc]->isValidMove(tr, tc, grid))
+							if (!moveLeavesKingInCheck(fr, fc, tr, tc))
+								return true;
+					}
+			}
+		return false;
+	}
 };
