@@ -57,3 +57,53 @@ protected:
 		return true;
 	}
 };
+/ PAWN
+class Pawn : public Piece
+{
+public:
+	Pawn(char color, int row, int col)
+		: Piece(color, 'P', row, col) {}
+
+	bool isValidMove(int toRow, int toCol,
+		Piece* board[8][8]) const override
+	{
+		if (!inBounds(toRow, toCol)) return false;
+		int dir = (color == 'w') ? -1 : 1;
+		int startRow = (color == 'w') ? 6 : 1;
+		int dr = toRow - row;
+		int dc = toCol - col;
+
+		if (dc == 0 && dr == dir && board[toRow][toCol] == nullptr)
+			return true;
+
+		if (dc == 0 && dr == 2 * dir && row == startRow
+			&& board[row + dir][col] == nullptr
+			&& board[toRow][toCol] == nullptr)
+			return true;
+
+		if (abs(dc) == 1 && dr == dir
+			&& board[toRow][toCol] != nullptr
+			&& board[toRow][toCol]->getColor() != color)
+			return true;
+
+		return false;
+	}
+};
+
+//  ROOK
+class Rook : public Piece
+{
+public:
+	Rook(char color, int row, int col)
+		: Piece(color, 'R', row, col) {}
+
+	bool isValidMove(int toRow, int toCol,
+		Piece* board[8][8]) const override
+	{
+		if (!inBounds(toRow, toCol)) return false;
+		if (toRow != row && toCol != col) return false;
+		if (board[toRow][toCol] != nullptr &&
+			board[toRow][toCol]->getColor() == color) return false;
+		return isPathClear(toRow, toCol, board);
+	}
+};
