@@ -61,4 +61,11 @@ public:
 		for (int c = 0; c < 8; c++)
 			grid[6][c] = new Pawn('w', 6, c);
 	}
+	// Getters
+	Piece* getPiece(int r, int c) const { return grid[r][c]; }
+	char getTurn()        const { return currentTurn; }
+	bool isGameOver()     const { return gameOver; }
+	char getWinner()      const { return winner; }
+	bool isInCheck()      const { return inCheckState; }
+	bool isStalemate()    const { return stalemateState; }
 };
