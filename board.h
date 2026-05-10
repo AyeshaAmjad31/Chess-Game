@@ -147,4 +147,56 @@ public:
 			}
 		return false;
 	}
+
+	// ===== MOVE PIECE =====
+	bool movePiece(int fr, int fc, int tr, int tc)
+	{
+		Piece* piece = grid[fr][fc];
+		if (piece == nullptr) return false;
+		if (piece->getColor() != currentTurn) return false;
+		if (!piece->isValidMove(tr, tc, grid)) return false;
+
+		// Check if move leaves own king in check
+		if (moveLeavesKingInCheck(fr, fc, tr, tc))
+			return false;
+
+		// Capture piece
+		if (grid[tr][tc] != nullptr)
+			delete grid[tr][tc];
+
+		// Execute move
+		grid[tr][tc] = piece;
+		grid[fr][fc] = nullptr;
+		piece->setPosition(tr, tc);
+
+		// Switch turn
+		currentTurn = (currentTurn == 'w') ? 'b' : 'w';
+
+		// Update check state for NEW current player
+		Piece* tempGrid[8][8];
+		for (int r = 0; r < 8; r++)
+			for (int c = 0; c < 8; c++)
+				tempGrid[r][c] = grid[r][c];
+
+		inCheckState = isKingInCheck(currentTurn, tempGrid);
+
+		// Check for checkmate or stalemate
+		if (!hasValidMoves(currentTurn))
+		{
+			gameOver = true;
+			if (inCheckState)
+			{
+				// Checkmate — previous player wins
+				winner = (currentTurn == 'w') ? 'b' : 'w';
+			}
+			else
+			{
+				// Stalemate — draw
+				stalemateState = true;
+				winner = ' ';
+			}
+		}
+
+		return true;
+	}
 };
