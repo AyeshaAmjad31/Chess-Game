@@ -99,4 +99,32 @@ public:
 
 		if (kr == -1) return false;
 
+		// Check if any opponent piece can attack the king
+		char opponent = (color == 'w') ? 'b' : 'w';
+		for (int r = 0; r < 8; r++)
+			for (int c = 0; c < 8; c++)
+				if (tempGrid[r][c] != nullptr &&
+					tempGrid[r][c]->getColor() == opponent)
+					if (tempGrid[r][c]->isValidMove(kr, kc, tempGrid))
+						return true;
+
+		return false;
+	}
+
+	// Simulate a move and check if it leaves king in check
+	bool moveLeavesKingInCheck(int fr, int fc, int tr, int tc) const
+	{
+		// Copy grid
+		Piece* tempGrid[8][8];
+		for (int r = 0; r < 8; r++)
+			for (int c = 0; c < 8; c++)
+				tempGrid[r][c] = grid[r][c];
+
+		// Simulate move
+		tempGrid[tr][tc] = tempGrid[fr][fc];
+		tempGrid[fr][fc] = nullptr;
+
+		char color = tempGrid[tr][tc]->getColor();
+		return isKingInCheck(color, tempGrid);
+	}
 };
