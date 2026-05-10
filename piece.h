@@ -167,3 +167,23 @@ public:
 		return isPathClear(toRow, toCol, board);
 	}
 };
+
+//  KING 
+class King : public Piece
+{
+public:
+	King(char color, int row, int col)
+		: Piece(color, 'K', row, col) {}
+
+	bool isValidMove(int toRow, int toCol,
+		Piece* board[8][8]) const override
+	{
+		if (!inBounds(toRow, toCol)) return false;
+		int dr = abs(toRow - row);
+		int dc = abs(toCol - col);
+		if (dr > 1 || dc > 1) return false;
+		if (board[toRow][toCol] != nullptr &&
+			board[toRow][toCol]->getColor() == color) return false;
+		return true;
+	}
+};
