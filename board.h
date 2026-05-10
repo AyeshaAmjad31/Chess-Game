@@ -68,4 +68,35 @@ public:
 	char getWinner()      const { return winner; }
 	bool isInCheck()      const { return inCheckState; }
 	bool isStalemate()    const { return stalemateState; }
+
+	// ===== CHECK DETECTION =====
+	// Find king position of given color
+	void findKing(char color, int& kr, int& kc) const
+	{
+		for (int r = 0; r < 8; r++)
+			for (int c = 0; c < 8; c++)
+				if (grid[r][c] != nullptr &&
+					grid[r][c]->getColor() == color &&
+					grid[r][c]->getType() == 'K')
+				{
+					kr = r; kc = c;
+					return;
+				}
+	}
+
+	// Is the given color's king in check?
+	bool isKingInCheck(char color, Piece* tempGrid[8][8]) const
+	{
+		int kr = -1, kc = -1;
+		for (int r = 0; r < 8; r++)
+			for (int c = 0; c < 8; c++)
+				if (tempGrid[r][c] != nullptr &&
+					tempGrid[r][c]->getColor() == color &&
+					tempGrid[r][c]->getType() == 'K')
+				{
+					kr = r; kc = c;
+				}
+
+		if (kr == -1) return false;
+
 };
