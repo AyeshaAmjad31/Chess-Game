@@ -145,3 +145,25 @@ public:
 		return (dr == 2 && dc == 1) || (dr == 1 && dc == 2);
 	}
 };
+
+//  QUEEN 
+class Queen : public Piece
+{
+public:
+	Queen(char color, int row, int col)
+		: Piece(color, 'Q', row, col) {}
+
+	bool isValidMove(int toRow, int toCol,
+		Piece* board[8][8]) const override
+	{
+		if (!inBounds(toRow, toCol)) return false;
+		int dr = abs(toRow - row);
+		int dc = abs(toCol - col);
+		bool straight = (toRow == row || toCol == col);
+		bool diagonal = (dr == dc);
+		if (!straight && !diagonal) return false;
+		if (board[toRow][toCol] != nullptr &&
+			board[toRow][toCol]->getColor() == color) return false;
+		return isPathClear(toRow, toCol, board);
+	}
+};
